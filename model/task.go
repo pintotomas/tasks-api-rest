@@ -21,7 +21,7 @@ const (
 
 type Task struct {
 	Title       string     `json:"title"`
-	Description string     `json:"description"`
+	Description string     `json:"description,omitempty"`
 	Status      TaskStatus `json:"status"`
 	DueDate     time.Time  `json:"due_date,omitempty"`
 	Responsible string     `json:"responsible"`

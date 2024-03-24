@@ -19,3 +19,6 @@ README.md
 
 # IDE files
 .idea/
+
+# sqlite db
+*.db

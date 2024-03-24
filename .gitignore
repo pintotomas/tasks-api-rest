@@ -22,3 +22,6 @@ go.work
 
 # IDE files
 .idea/
+
+# sqlite db
+*.db
