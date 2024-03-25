@@ -9,7 +9,7 @@ import (
 
 func InitializeDB() *sql.DB {
 	// Open a database connection
-	// TODO move to env variables
+	// TODO improvement: move to env variables
 	db, err := sql.Open("sqlite3", "task.db")
 	if err != nil {
 		log.Fatal(err)

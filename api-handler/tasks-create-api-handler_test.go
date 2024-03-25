@@ -106,7 +106,7 @@ type MockTasksRepository struct {
 	GetMock    func(ID int) (*repository.Task, error)
 	UpdateMock func(task *model.UpdateTask) (*repository.Task, error)
 	DeleteMock func(ID int) error
-	ListMock   func() ([]*repository.Task, error)
+	ListMock   func(page, size int) ([]*repository.Task, error)
 }
 
 func (m MockTasksRepository) Create(task *model.Task) (*repository.Task, error) {
@@ -120,14 +120,14 @@ func (m MockTasksRepository) Get(ID int) (*repository.Task, error) {
 	if m.GetMock == nil {
 		return nil, errors.New("mock for Get does not exist")
 	}
-	return m.Get(ID)
+	return m.GetMock(ID)
 }
 
 func (m MockTasksRepository) Update(task *model.UpdateTask) (*repository.Task, error) {
 	if m.UpdateMock == nil {
 		return nil, errors.New("mock for Update does not exist")
 	}
-	return m.Update(task)
+	return m.UpdateMock(task)
 }
 
 func (m MockTasksRepository) Delete(ID int) error {
@@ -137,9 +137,9 @@ func (m MockTasksRepository) Delete(ID int) error {
 	return m.DeleteMock(ID)
 }
 
-func (m MockTasksRepository) List() ([]*repository.Task, error) {
+func (m MockTasksRepository) List(page, size int) ([]*repository.Task, error) {
 	if m.ListMock == nil {
 		return nil, errors.New("mock for List does not exist")
 	}
-	return m.ListMock()
+	return m.ListMock(page, size)
 }

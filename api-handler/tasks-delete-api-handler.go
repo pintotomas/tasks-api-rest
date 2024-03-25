@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// TasksDeleteAPIHandler handles delete requests
 func (h *TaskAPIHandler) TasksDeleteAPIHandler(w http.ResponseWriter, r *http.Request) {
 	// Split the URL path by '/'
 	parts := strings.Split(r.URL.Path, "/")

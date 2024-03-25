@@ -1,12 +1,14 @@
 package api_handler
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
 	"tasks_api/model"
 )
 
+// TasksUpdateAPIHandler handles update requests
 func (h *TaskAPIHandler) TasksUpdateAPIHandler(w http.ResponseWriter, r *http.Request) {
 	// Decode the JSON request body into a Update Task struct
 	var updateTask *model.UpdateTask
@@ -31,13 +33,17 @@ func (h *TaskAPIHandler) TasksUpdateAPIHandler(w http.ResponseWriter, r *http.Re
 	// Update task
 	updatedTask, err := h.tasksRepo.Update(updateTask)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
 		log.Printf("Error while updating task: %s\n", err)
+		if err == sql.ErrNoRows {
+			w.WriteHeader(http.StatusNotFound)
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 		return
 	}
 
 	// Return updated task
-	w.WriteHeader(http.StatusCreated)
+	w.WriteHeader(http.StatusOK)
 	err = json.NewEncoder(w).Encode(updatedTask)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

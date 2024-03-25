@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  db:
+    image: alpine
+    volumes:
+      - db-data:/app
+    command: ["touch", "/app/task.db"]
+
+  app:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  db-data:

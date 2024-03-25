@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// TasksGetAPIHandler handles get requests
 func (h *TaskAPIHandler) TasksGetAPIHandler(w http.ResponseWriter, r *http.Request) {
 	// Split the URL path by '/'
 	parts := strings.Split(r.URL.Path, "/")

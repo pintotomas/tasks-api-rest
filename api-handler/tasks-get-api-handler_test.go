@@ -50,7 +50,7 @@ func TestTasksGetAPIHandler(t *testing.T) {
 			// Create a ResponseRecorder to record the response
 			rr := httptest.NewRecorder()
 
-			handler.TasksDeleteAPIHandler(rr, req)
+			handler.TasksGetAPIHandler(rr, req)
 
 			// Check the status code of the response
 			if status := rr.Code; status != tc.Expected {

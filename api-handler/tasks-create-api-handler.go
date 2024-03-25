@@ -7,6 +7,7 @@ import (
 	"tasks_api/model"
 )
 
+// TasksCreateAPIHandler handles creates requests
 func (h *TaskAPIHandler) TasksCreateAPIHandler(w http.ResponseWriter, r *http.Request) {
 	// Decode the JSON request body into a Task struct
 	var task *model.Task

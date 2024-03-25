@@ -12,6 +12,7 @@ const (
 	defaultPageSize = 10
 )
 
+// TasksListAPIHandler handles list requests
 func (h *TaskAPIHandler) TasksListAPIHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Parse query parameters

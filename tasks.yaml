@@ -1,0 +1,132 @@
+openapi: 3.0.0
+info:
+  title: Task API
+  description: API for managing tasks
+  version: 1.0.0
+paths:
+  /tasks/{id}:
+    get:
+      summary: Get a task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the task
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Task found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found
+    delete:
+      summary: Delete a task by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the task
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Task deleted successfully
+  /tasks:
+    get:
+      summary: Get all tasks
+      parameters:
+        - name: page
+          in: query
+          description: Page number
+          schema:
+            type: integer
+            minimum: 1
+        - name: size
+          in: query
+          description: Page size
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: List of tasks obtained
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+    post:
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '200':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad request
+    put:
+      summary: Update a task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskRequest'
+      responses:
+        '200':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad request
+components:
+  schemas:
+    TaskRequest:
+      type: object
+      required:
+        - title
+        - status
+        - responsible
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          type: integer
+        due_date:
+          type: string
+          format: date-time
+        responsible:
+          type: string
+    Task:
+      allOf:
+        - $ref: '#/components/schemas/TaskRequest'
+        - properties:
+            id:
+              type: integer
+              minimum: 1
+            created_date:
+              type: string
+              format: date-time
+            updated_date:
+              type: string
+              format: date-time
+
