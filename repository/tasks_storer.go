@@ -11,5 +11,5 @@ type TasksStorer interface {
 	Get(ID int) (*repository.Task, error)
 	Update(task *model.UpdateTask) (*repository.Task, error)
 	Delete(ID int) error
-	List() ([]*repository.Task, error)
+	List(page, size int) ([]*repository.Task, error)
 }

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"tasks_api/model"
 	repository "tasks_api/repository/model"
@@ -164,16 +165,18 @@ func (r *TasksRepository) Delete(ID int) error {
 	return nil
 }
 
-// List retrieves a list of all tasks from the database
-func (r *TasksRepository) List() ([]*repository.Task, error) {
-	// Prepare the SQL statement
-	stmt, err := r.db.Prepare("SELECT ID, Title, Description, Status, DueDate, Responsible, CreatedDate, UpdatedDate FROM tasks")
+func (r *TasksRepository) List(page, size int) ([]*repository.Task, error) {
+	// Calculate the offset based on the page and size parameters
+	offset := (page - 1) * size
+
+	// Prepare the SQL statement with LIMIT and OFFSET clauses
+	stmt, err := r.db.Prepare(fmt.Sprintf("SELECT ID, Title, Description, Status, DueDate, Responsible, CreatedDate, UpdatedDate FROM tasks LIMIT %d OFFSET %d", size, offset))
 	if err != nil {
 		return nil, err
 	}
 	defer closeStmt(stmt)
 
-	// Execute the SQL statement to query all tasks
+	// Execute the SQL statement to query tasks with pagination
 	rows, err := stmt.Query()
 	if err != nil {
 		return nil, err
