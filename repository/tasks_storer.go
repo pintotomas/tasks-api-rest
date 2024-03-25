@@ -9,7 +9,7 @@ import (
 type TasksStorer interface {
 	Create(task *model.Task) (*repository.Task, error)
 	Get(ID int) (*repository.Task, error)
-	Update(task *model.Task) (*repository.Task, error)
+	Update(task *model.UpdateTask) (*repository.Task, error)
 	Delete(ID int) error
 	List() ([]*repository.Task, error)
 }

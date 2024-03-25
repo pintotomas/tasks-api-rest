@@ -107,8 +107,43 @@ func (r *TasksRepository) Get(ID int) (*repository.Task, error) {
 }
 
 // Update updates an existing task in the database
-func (r *TasksRepository) Update(task *model.Task) (*repository.Task, error) {
-	return nil, nil
+func (r *TasksRepository) Update(task *model.UpdateTask) (*repository.Task, error) {
+	// Prepare the SQL statement
+	stmt, err := r.db.Prepare(`
+		UPDATE tasks
+		SET Title = ?, Description = ?, Status = ?, DueDate = ?, Responsible = ?, UpdatedDate = CURRENT_TIMESTAMP
+		WHERE ID = ?
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer closeStmt(stmt)
+
+	// Execute the SQL statement for updating
+	result, err := stmt.Exec(task.Title, task.Description, task.Status, task.DueDate, task.Responsible, task.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// Check the number of rows affected by the update operation
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return nil, err
+	}
+
+	// If no rows were affected, return an error indicating that the task was not found
+	if rowsAffected == 0 {
+		return nil, sql.ErrNoRows
+	}
+
+	// Fetch the updated task from the database to ensure we have the latest data
+	updatedTask, err := r.Get(task.ID)
+	if err != nil {
+		return nil, err // Return error if unable to fetch the updated task
+	}
+
+	// Return the updated task
+	return updatedTask, nil
 }
 
 // Delete deletes a task from the database by its ID

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"tasks_api/model"
+	repository "tasks_api/repository/model"
 	"testing"
 )
 
@@ -71,7 +73,13 @@ func TestTasksUpdateAPIHandler(t *testing.T) {
 	}
 
 	// Create a new instance of TaskAPIHandler
-	handler := TaskAPIHandler{}
+	mockRepo := &MockTasksRepository{}
+	handler := NewTaskAPIHandler(mockRepo)
+
+	// Mock create response
+	mockRepo.UpdateMock = func(task *model.UpdateTask) (*repository.Task, error) {
+		return &repository.Task{}, nil
+	}
 
 	// Iterate over test cases
 	for _, tc := range testCases {

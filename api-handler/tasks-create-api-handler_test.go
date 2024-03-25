@@ -104,7 +104,7 @@ func TestTasksCreateAPIHandler(t *testing.T) {
 type MockTasksRepository struct {
 	CreateMock func(task *model.Task) (*repository.Task, error)
 	GetMock    func(ID int) (*repository.Task, error)
-	UpdateMock func(task *model.Task) (*repository.Task, error)
+	UpdateMock func(task *model.UpdateTask) (*repository.Task, error)
 	DeleteMock func(ID int) error
 	ListMock   func() ([]*repository.Task, error)
 }
@@ -123,7 +123,7 @@ func (m MockTasksRepository) Get(ID int) (*repository.Task, error) {
 	return m.Get(ID)
 }
 
-func (m MockTasksRepository) Update(task *model.Task) (*repository.Task, error) {
+func (m MockTasksRepository) Update(task *model.UpdateTask) (*repository.Task, error) {
 	if m.UpdateMock == nil {
 		return nil, errors.New("mock for Update does not exist")
 	}
