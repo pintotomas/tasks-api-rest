@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"strings"
@@ -97,14 +97,15 @@ func TestTaskValidation(t *testing.T) {
 	}
 }
 
-// TestCase represents a test case for task validation
-type TestCase struct {
-	Name           string
-	Task           Task
-	ExpectedErrors []string
-}
-
 func TestTaskValidationErrors(t *testing.T) {
+
+	// TestCase represents a test case for task validation errors
+	type TestCase struct {
+		Name           string
+		Task           Task
+		ExpectedErrors []string
+	}
+
 	testCases := []TestCase{
 		{
 			Name: "Simple valid task",

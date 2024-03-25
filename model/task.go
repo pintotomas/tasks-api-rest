@@ -1,4 +1,4 @@
-package main
+package model
 
 import (
 	"time"
@@ -44,6 +44,7 @@ func (t *Task) Validate() bool {
 	return true
 }
 
+// ValidationErrors holds the errors of Task model
 type ValidationErrors struct {
 	Errors []string
 }

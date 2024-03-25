@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	api_handler "tasks_api/api-handler"
 )
 
 func main() {
@@ -25,9 +26,20 @@ func main() {
 		}
 	}(dbConn)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprint(w, "Hello, World!")
-	})
+	tasksAPIHandler := &api_handler.TaskAPIHandler{}
 
-	http.ListenAndServe(":8080", nil)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "ok")
+	})
+	mux.Handle("/tasks", tasksAPIHandler)
+	mux.Handle("/tasks/", tasksAPIHandler)
+	fmt.Println("listening on 8000")
+	http.ListenAndServe("localhost:8080", mux)
+
+	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	//	fmt.Fprint(w, "Hello, World!")
+	//})
+	//
+	//http.ListenAndServe(":8080", nil)
 }
