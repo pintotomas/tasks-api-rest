@@ -148,6 +148,19 @@ func (r *TasksRepository) Update(task *model.UpdateTask) (*repository.Task, erro
 
 // Delete deletes a task from the database by its ID
 func (r *TasksRepository) Delete(ID int) error {
+	// Prepare the SQL statement
+	stmt, err := r.db.Prepare("DELETE FROM tasks WHERE ID = ?")
+	if err != nil {
+		return err
+	}
+	defer closeStmt(stmt)
+
+	// Execute the SQL statement for deleting
+	_, err = stmt.Exec(ID)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

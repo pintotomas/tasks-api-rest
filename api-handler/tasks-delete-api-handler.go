@@ -21,5 +21,12 @@ func (h *TaskAPIHandler) TasksDeleteAPIHandler(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	log.Printf("Deleting task with ID: %d\n", id)
+	// Delete task
+	err = h.tasksRepo.Delete(id)
+	if err != nil {
+		log.Printf("Error while deleting task: %s\n", err)
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
+	w.WriteHeader(http.StatusOK)
 }

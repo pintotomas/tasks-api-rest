@@ -29,7 +29,13 @@ func TestTasksDeleteAPIHandler(t *testing.T) {
 	}
 
 	// Create a new instance of TaskAPIHandler
-	handler := TaskAPIHandler{}
+	mockRepo := &MockTasksRepository{}
+	handler := NewTaskAPIHandler(mockRepo)
+
+	// Mock delete response
+	mockRepo.DeleteMock = func(ID int) error {
+		return nil
+	}
 
 	// Iterate over test cases
 	for _, tc := range testCases {
