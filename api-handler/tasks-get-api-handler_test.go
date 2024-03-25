@@ -3,6 +3,7 @@ package api_handler
 import (
 	"net/http"
 	"net/http/httptest"
+	repository "tasks_api/repository/model"
 	"testing"
 )
 
@@ -29,7 +30,13 @@ func TestTasksGetAPIHandler(t *testing.T) {
 	}
 
 	// Create a new instance of TaskAPIHandler
-	handler := TaskAPIHandler{}
+	mockRepo := &MockTasksRepository{}
+	handler := NewTaskAPIHandler(mockRepo)
+
+	// Mock get response
+	mockRepo.GetMock = func(ID int) (*repository.Task, error) {
+		return &repository.Task{}, nil
+	}
 
 	// Iterate over test cases
 	for _, tc := range testCases {

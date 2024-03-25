@@ -40,7 +40,11 @@ func main() {
 	mux.Handle("/tasks", tasksAPIHandler)
 	mux.Handle("/tasks/", tasksAPIHandler)
 	fmt.Println("listening on 8000")
-	http.ListenAndServe("localhost:8080", mux)
+	err = http.ListenAndServe(":8080", mux)
+	if err != nil {
+		log.Fatalf("Error while initializing server: %s\n", err)
+		return
+	}
 
 	//http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Fprint(w, "Hello, World!")

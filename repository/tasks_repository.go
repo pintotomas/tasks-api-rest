@@ -32,12 +32,7 @@ func (r *TasksRepository) Create(task *model.Task) (*repository.Task, error) {
 		log.Printf("An error occured while creating task: %s\n", err)
 		return nil, err
 	}
-	defer func(stmt *sql.Stmt) {
-		err = stmt.Close()
-		if err != nil {
-			log.Printf("Error while closing Stmt: %s\n", err)
-		}
-	}(stmt)
+	defer closeStmt(stmt)
 
 	createDate, updateDate := time.Now(), time.Now()
 
@@ -78,7 +73,37 @@ func (r *TasksRepository) Create(task *model.Task) (*repository.Task, error) {
 
 // Get retrieves a task from the database by its ID
 func (r *TasksRepository) Get(ID int) (*repository.Task, error) {
-	return nil, nil
+	// Prepare the SQL statement for retrieving a task by its ID
+	stmt, err := r.db.Prepare(`
+		SELECT ID, Title, Description, Status, DueDate, Responsible, CreatedDate, UpdatedDate
+		FROM tasks
+		WHERE ID = ?
+	`)
+	if err != nil {
+		return nil, err
+	}
+	defer closeStmt(stmt)
+
+	// Execute the SQL statement to fetch the task from the database
+	row := stmt.QueryRow(ID)
+
+	// Scan the database row and populate the task model
+	task := &repository.Task{}
+	err = row.Scan(
+		&task.ID,
+		&task.Title,
+		&task.Description,
+		&task.Status,
+		&task.DueDate,
+		&task.Responsible,
+		&task.CreatedDate,
+		&task.UpdatedDate,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return task, nil
 }
 
 // Update updates an existing task in the database
@@ -94,4 +119,11 @@ func (r *TasksRepository) Delete(ID int) error {
 // List retrieves a list of all tasks from the database
 func (r *TasksRepository) List() ([]*repository.Task, error) {
 	return nil, nil
+}
+
+func closeStmt(stmt *sql.Stmt) {
+	err := stmt.Close()
+	if err != nil {
+		log.Printf("Error while closing Stmt: %s\n", err)
+	}
 }
