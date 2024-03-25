@@ -44,5 +44,4 @@ func (h *TaskAPIHandler) TasksUpdateAPIHandler(w http.ResponseWriter, r *http.Re
 		log.Printf("Error while encoding task: %s\n", err)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
