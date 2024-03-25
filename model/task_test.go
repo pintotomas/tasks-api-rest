@@ -22,7 +22,7 @@ func TestTaskValidation(t *testing.T) {
 				Title:       "Title",
 				Description: "Description",
 				Status:      InProgress, // Valid status
-				DueDate:     time.Now(),
+				DueDate:     ptr(time.Now()),
 				Responsible: "Tomas",
 			},
 			Valid: true,
@@ -33,7 +33,7 @@ func TestTaskValidation(t *testing.T) {
 				Title:       generateString(titleLimit),
 				Description: generateString(descriptionLimit),
 				Status:      InProgress, // Valid status
-				DueDate:     time.Now(),
+				DueDate:     ptr(time.Now()),
 				Responsible: generateString(responsibleLimit),
 			},
 			Valid: true,
@@ -113,7 +113,7 @@ func TestTaskValidationErrors(t *testing.T) {
 				Title:       "Title",
 				Description: "Description",
 				Status:      InProgress, // Valid status
-				DueDate:     time.Now(),
+				DueDate:     ptr(time.Now()),
 				Responsible: "Tomas",
 			},
 			ExpectedErrors: []string{},
@@ -124,7 +124,7 @@ func TestTaskValidationErrors(t *testing.T) {
 				Title:       generateString(titleLimit),
 				Description: generateString(descriptionLimit),
 				Status:      InProgress, // Valid status
-				DueDate:     time.Now(),
+				DueDate:     ptr(time.Now()),
 				Responsible: generateString(responsibleLimit),
 			},
 			ExpectedErrors: []string{},
@@ -219,4 +219,9 @@ func equal(a, b []string) bool {
 		}
 	}
 	return true
+}
+
+// Ptr nolint
+func ptr[T any](x T) *T {
+	return &x
 }

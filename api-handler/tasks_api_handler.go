@@ -3,6 +3,7 @@ package api_handler
 import (
 	"net/http"
 	"regexp"
+	"tasks_api/repository"
 )
 
 var (
@@ -14,11 +15,18 @@ var (
 )
 
 type TaskAPIHandler struct {
-	// Add a reference to the repository
+	tasksRepo repository.TasksStorer
 }
 
-func (h *TaskAPIHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+// NewTaskAPIHandler returns a new TaskAPIHandler
+func NewTaskAPIHandler(tasksRepo repository.TasksStorer) *TaskAPIHandler {
+	apiHandler := &TaskAPIHandler{}
+	apiHandler.tasksRepo = tasksRepo
+	return apiHandler
+}
 
+// ServeHTTP handles tasks http requests
+func (h *TaskAPIHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("content-type", "application/json")
 	switch {
 	case r.Method == http.MethodGet && listTasksRequest.MatchString(r.URL.Path):
@@ -37,11 +45,7 @@ func (h *TaskAPIHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		h.TasksDeleteAPIHandler(w, r)
 		return
 	default:
-		notFound(w, r)
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
-}
-
-func notFound(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotFound)
 }

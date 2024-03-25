@@ -2,9 +2,12 @@ package api_handler
 
 import (
 	"bytes"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"tasks_api/model"
+	repository "tasks_api/repository/model"
 	"testing"
 )
 
@@ -59,7 +62,13 @@ func TestTasksCreateAPIHandler(t *testing.T) {
 	}
 
 	// Create a new instance of TaskAPIHandler
-	handler := TaskAPIHandler{}
+	mockRepo := &MockTasksRepository{}
+	handler := NewTaskAPIHandler(mockRepo)
+
+	// Mock create response
+	mockRepo.CreateMock = func(task *model.Task) (*repository.Task, error) {
+		return &repository.Task{}, nil
+	}
 
 	// Iterate over test cases
 	for _, tc := range testCases {
@@ -90,4 +99,47 @@ func TestTasksCreateAPIHandler(t *testing.T) {
 			}
 		})
 	}
+}
+
+type MockTasksRepository struct {
+	CreateMock func(task *model.Task) (*repository.Task, error)
+	GetMock    func(ID int) (*repository.Task, error)
+	UpdateMock func(task *model.Task) (*repository.Task, error)
+	DeleteMock func(ID int) error
+	ListMock   func() ([]*repository.Task, error)
+}
+
+func (m MockTasksRepository) Create(task *model.Task) (*repository.Task, error) {
+	if m.CreateMock == nil {
+		return nil, errors.New("mock for Create does not exist")
+	}
+	return m.CreateMock(task)
+}
+
+func (m MockTasksRepository) Get(ID int) (*repository.Task, error) {
+	if m.GetMock == nil {
+		return nil, errors.New("mock for Get does not exist")
+	}
+	return m.Get(ID)
+}
+
+func (m MockTasksRepository) Update(task *model.Task) (*repository.Task, error) {
+	if m.UpdateMock == nil {
+		return nil, errors.New("mock for Update does not exist")
+	}
+	return m.Update(task)
+}
+
+func (m MockTasksRepository) Delete(ID int) error {
+	if m.DeleteMock == nil {
+		return errors.New("mock for Delete does not exist")
+	}
+	return m.DeleteMock(ID)
+}
+
+func (m MockTasksRepository) List() ([]*repository.Task, error) {
+	if m.ListMock == nil {
+		return nil, errors.New("mock for List does not exist")
+	}
+	return m.ListMock()
 }

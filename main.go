@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	api_handler "tasks_api/api-handler"
+	repository2 "tasks_api/repository"
 )
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 		return
 	}
 
+	// Close db connection when we stop the API
 	defer func(dbConn *sql.DB) {
 		err = dbConn.Close()
 		if err != nil {
@@ -26,7 +28,10 @@ func main() {
 		}
 	}(dbConn)
 
-	tasksAPIHandler := &api_handler.TaskAPIHandler{}
+	// Initialize
+	repository := repository2.NewTaskRepository(dbConn)
+
+	tasksAPIHandler := api_handler.NewTaskAPIHandler(repository)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
