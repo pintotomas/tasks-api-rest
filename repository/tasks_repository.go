@@ -166,9 +166,51 @@ func (r *TasksRepository) Delete(ID int) error {
 
 // List retrieves a list of all tasks from the database
 func (r *TasksRepository) List() ([]*repository.Task, error) {
-	return nil, nil
+	// Prepare the SQL statement
+	stmt, err := r.db.Prepare("SELECT ID, Title, Description, Status, DueDate, Responsible, CreatedDate, UpdatedDate FROM tasks")
+	if err != nil {
+		return nil, err
+	}
+	defer closeStmt(stmt)
+
+	// Execute the SQL statement to query all tasks
+	rows, err := stmt.Query()
+	if err != nil {
+		return nil, err
+	}
+
+	// Close the rows to release resources after scanning
+	defer func(rows *sql.Rows) {
+		err := rows.Close()
+		if err != nil {
+
+		}
+	}(rows)
+
+	// Initialize a slice to store the retrieved tasks
+	var tasks []*repository.Task
+
+	// Iterate through the rows of the result set and store each task in the result slice
+	for rows.Next() {
+		var task repository.Task
+
+		err := rows.Scan(&task.ID, &task.Title, &task.Description, &task.Status, &task.DueDate, &task.Responsible, &task.CreatedDate, &task.UpdatedDate)
+		if err != nil {
+			return nil, err
+		}
+
+		tasks = append(tasks, &task)
+	}
+
+	// Check for any errors encountered during iteration
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
 }
 
+// closes the statement to free resources
 func closeStmt(stmt *sql.Stmt) {
 	err := stmt.Close()
 	if err != nil {
